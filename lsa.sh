@@ -80,7 +80,7 @@ while true; do
             displayValues $page
         fi
 
-    elif [[ $key == 'a' ]]; then
+    elif [[ $key == 'a' || $key == '' ]]; then
         if [[ -f "${values[$index]}" ]]; then
             $editor "${values[$index]}"
         else

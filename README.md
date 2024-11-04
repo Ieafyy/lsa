@@ -14,7 +14,7 @@ A navegação é feita com as setas do teclado, e temos os seguintes atalhos::
 ## Atalhos
 
 - **a**: caso usado em cima de uma pasta, ele entra nela,
-caso usado em cima de um arquivo, ele abre o arquivo com o editor padrão;
+caso usado em cima de um arquivo, ele abre o arquivo com o editor padrão; (enter tambem funciona)
 
 - **s**: volta um diretório;
 
@@ -52,5 +52,9 @@ max_per_page=20
 ## Instalação
 
 Para instalar o lsa, basta clonar o repositório e rodar o script
-`install.sh` como sudo. Ele irá copiar o script para o diretorio
+`install.sh`. Ele irá copiar o script para o diretorio
 `/usr/local/bin` para tornar o comando lsa global.
+
+```bash
+git clone https://github.com/Ieafyy/lsa.git && cd lsa && chmod +x install.sh && ./install.sh
+```
