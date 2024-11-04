@@ -117,9 +117,7 @@ while true; do
     search=""
     while true; do
       read -n 1 -p "Pesquisar: $search" char
-      if [[ $char == "" || $char == $'\e' ]]; then
-        getValues
-        displayValues $page
+      if [[ $char == "" ]]; then
         break
       fi
       if [[ $char == $'\x7f' ]]; then
@@ -130,6 +128,11 @@ while true; do
         getValues
       else
         search+=$char
+      fi
+      if [[ $char == $'\e' ]]; then
+        getValues
+        displayValues $page
+        break
       fi
       values=($(echo ${values[@]} | tr ' ' '\n' | grep -i $search))
       values_len=${#values[@]}
