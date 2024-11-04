@@ -58,7 +58,7 @@ while true; do
       read -sn1 -t 0.1 key
       if [[ $key == 'A' ]]; then
         if [[ $index -lt 1 ]]; then
-          index=$((values_len - 1))
+          index=$(( values_len - 1 ))
         else
           ((index--))
         fi
@@ -117,7 +117,9 @@ while true; do
     search=""
     while true; do
       read -n 1 -p "Pesquisar: $search" char
-      if [[ $char == "" ]]; then
+      if [[ $char == "" || $char == $'\e' ]]; then
+        getValues
+        displayValues $page
         break
       fi
       if [[ $char == $'\x7f' ]]; then
