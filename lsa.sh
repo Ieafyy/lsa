@@ -1,10 +1,5 @@
-#-------------------------------------------
-
 editor='zed'
 max_per_page=20
-
-#-------------------------------------------
-
 
 getValues() {
     values=($(ls -A .))
@@ -63,22 +58,22 @@ while true; do
             read -sn1 -t 0.1 key
             if [[ $key == 'A' ]]; then
                 if [[ $index -lt 1 ]]; then
-                    #index=0
                     :
                 else
                   (( index-- ))
                 fi
             elif [[ $key == 'B' ]]; then
                 if [[ $index -gt $(( values_len - 2  )) ]]; then
-                    #index=$(( values_len - 1 ))
                     :
                 else
                     (( index++ ))
                 fi
-            elif [[ $key == 'C' ]]; then
-                :
-            elif [[ $key == 'D' ]]; then
-                :
+            elif [[ $key == 'C' && $page -lt $(( values_len / max_per_page )) ]]; then
+                displayValues $(( page++ ))
+                (( index += max_per_page ))
+            elif [[ $key == 'D' && $page -gt 0 ]]; then
+                displayValues $(( page-- ))
+                (( index -= max_per_page ))
             fi
         else
             getValues
@@ -106,7 +101,7 @@ while true; do
         displayValues $page
 
     elif [[ $key == 'd' ]]; then
-        $editor "${values[$index]}"
+        $editor "$PWD"
 
     elif [[ $key == 'x' && $page -lt $(( values_len / max_per_page )) ]]; then
         displayValues $(( page++ ))
@@ -143,6 +138,29 @@ while true; do
         else
             :
         fi
+
+    elif [[ $key == 'f' ]]; then
+        read -p "Novo nome: " name
+        mv ${values[$index]} $name
+        getValues
+        displayValues $page
+
+    elif [[ $key == 'h' ]]; then
+        clear
+        echo "a: abrir arquivo/diretorio"
+        echo "s: voltar um diretorio"
+        echo "d: abrir diretorio no editor"
+        echo "q: sair"
+        echo "x: proxima pagina"
+        echo "z: pagina anterior"
+        echo "/: pesquisar"
+        echo ".: criar arquivo/diretorio"
+        echo "r: remover arquivo/diretorio"
+        echo "f: renomear arquivo/diretorio"
+        echo "h: ajuda"
+        read -sn1
+        getValues
+        displayValues $page
     fi
 
 done
