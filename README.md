@@ -58,3 +58,10 @@ Para instalar o lsa, basta clonar o repositório e rodar o script
 ```bash
 git clone https://github.com/Ieafyy/lsa.git && cd lsa && chmod +x install.sh && ./install.sh
 ```
+
+Pode tambem adicionar um alias no bash para tornar o comando capaz de
+se mover entre os diretorios e guardar o diretorio ao sair do lsa.
+
+```bash
+echo 'alias="source /usr/local/bin/lsa"'
+```

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 editor='zed'
 max_per_page=20
 
