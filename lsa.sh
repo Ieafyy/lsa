@@ -1,6 +1,8 @@
 #!/bin/bash
 
-editor='nvim'
+editor='zed'
+#max_per_page=`tput lines`
+#max_per_page=$(( max_per_page / 2 ))
 max_per_page=20
 
 getValues() {
@@ -45,7 +47,6 @@ displayValues() {
     fi
   done
   echo "------------------------------------"
-  #tput cup 0 0
 }
 
 while true; do
@@ -57,20 +58,22 @@ while true; do
     if [[ $key == "[" ]]; then
       read -sn1 -t 0.1 key
       if [[ $key == 'A' ]]; then
-        if [[ $index -lt 1 ]]; then
-          index=$(( values_len - 1 ))
+        if [[ $index -lt $(( ((page + 1) * max_per_page) - max_per_page + 1 )) ]]; then
+          index=$(( ((page + 1) * max_per_page) + 1 ))
+          if [[ $index -gt $values_len ]]; then index=$((values_len - 1)); fi
         else
           ((index--))
         fi
       elif [[ $key == 'B' ]]; then
-        if [[ $index -gt $((values_len - 2)) ]]; then
-          index=0
+        if [[ $index -gt $(( (page + 1) * max_per_page )) || $index -gt $(( values_len - 2 )) ]]; then
+          index=$(( ((page + 1) * max_per_page) - max_per_page ))
         else
           ((index++))
         fi
       elif [[ $key == 'C' && $page -lt $((values_len / max_per_page)) ]]; then
         displayValues $((page++))
         ((index += max_per_page))
+        if [[ $index -gt $values_len ]]; then index=$((values_len - 1)); fi
       elif [[ $key == 'D' && $page -gt 0 ]]; then
         displayValues $((page--))
         ((index -= max_per_page))
