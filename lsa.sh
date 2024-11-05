@@ -104,7 +104,11 @@ while true; do
     displayValues $page
 
   elif [[ $key == 'd' ]]; then
-    $editor "$PWD"
+    if [[ -f ${values[$index]} ]]; then
+        $editor "$PWD"
+    else
+        $editor ${values[$index]}
+    fi
 
   elif [[ $key == 'x' && $page -lt $((values_len / max_per_page)) ]]; then
     displayValues $((page++))
