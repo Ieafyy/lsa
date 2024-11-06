@@ -34,6 +34,14 @@ caso usado em cima de um arquivo, ele abre o arquivo com o editor padrão; (ente
 
 - **r**: remove o arquivo ou diretório selecionado;
 
+- **f**: renomeia o arquivo ou diretório selecionado;
+
+- **c**: copiar e colar arquivo/diretorio;
+
+- **m**: mover e colar arquivo/diretorio;
+
+- **v**: cancelar copiar/mover;
+
 - **.**: cria um arquivo (ou diretorio se comecar com /);
 
 - **h**: abre o menu de ajuda;
