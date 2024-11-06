@@ -4,6 +4,10 @@ editor='zed'
 #max_per_page=`tput lines`
 #max_per_page=$(( max_per_page / 2 ))
 max_per_page=20
+flag_c=0
+flag_m=0
+dirC=""
+dirM=""
 
 getValues() {
   values=($(ls -A .))
@@ -25,6 +29,9 @@ displayValues() {
   fi
   echo "Diretorio atual: $(pwd)"
   echo "$values_len arquivos | pagina ${j}/$((values_len / max_per_page))"
+  echo "------------------------------------"
+  echo "Mover: ${dirM:-null}"
+  echo "Copiar: ${dirC:-null}"
   echo "------------------------------------"
   for ((i = $j_loop; i < ${#values[@]}; i++)); do
     if [[ $i -eq $index ]]; then
@@ -58,15 +65,15 @@ while true; do
     if [[ $key == "[" ]]; then
       read -sn1 -t 0.1 key
       if [[ $key == 'A' ]]; then
-        if [[ $index -lt $(( ((page + 1) * max_per_page) - max_per_page + 1 )) ]]; then
-          index=$(( ((page + 1) * max_per_page) + 1 ))
+        if [[ $index -lt $((((page + 1) * max_per_page) - max_per_page + 1)) ]]; then
+          index=$((((page + 1) * max_per_page) + 1))
           if [[ $index -gt $values_len ]]; then index=$((values_len - 1)); fi
         else
           ((index--))
         fi
       elif [[ $key == 'B' ]]; then
-        if [[ $index -gt $(( (page + 1) * max_per_page )) || $index -gt $(( values_len - 2 )) ]]; then
-          index=$(( ((page + 1) * max_per_page) - max_per_page ))
+        if [[ $index -gt $(((page + 1) * max_per_page)) || $index -gt $((values_len - 2)) ]]; then
+          index=$((((page + 1) * max_per_page) - max_per_page))
         else
           ((index++))
         fi
@@ -105,9 +112,9 @@ while true; do
 
   elif [[ $key == 'd' ]]; then
     if [[ -f ${values[$index]} ]]; then
-        $editor "$PWD"
+      $editor "$PWD"
     else
-        $editor ${values[$index]}
+      $editor ${values[$index]}
     fi
 
   elif [[ $key == 'x' && $page -lt $((values_len / max_per_page)) ]]; then
@@ -174,6 +181,56 @@ while true; do
     getValues
     displayValues $page
 
+  elif [[ $key == 'c' ]]; then
+    if [[ $flag_c == 0 ]]; then
+        if [[ -f ${values[$index]} ]]; then
+            dirC="${PWD}/${values[$index]}"
+            echo "Arquivo ${values[$index]} copiado!"
+            flag_c=1
+        else
+            echo "Diretorio ${values[$index]} copiado!"
+            dirC="${PWD}/${values[$index]}"
+            flag_c=1
+        fi
+    else
+      if [[ $flag_c == 0 ]]; then
+        flag_c=0
+        cp $dirC $PWD
+        dirC=""
+        echo "Arquivo colado!"
+        getValues
+        displayValues $page
+      else
+        flag_c=0
+        cp -r $dirC $PWD
+        dirC=""
+        echo "Diretorio colado!"
+        getValues
+        displayValues $page
+      fi
+    fi
+
+  elif [[ $key == 'm' ]]; then
+    if [[ $flag_m == 0 ]]; then
+      dirM="${PWD}/${values[$index]}"
+      echo "Arquivo ${values[$index]} recortado!"
+      flag_m=1
+    else
+      flag_m=0
+      mv $dirM $PWD
+      dirM=""
+      echo "Arquivo colado!"
+      getValues
+      displayValues $page
+    fi
+
+  elif [[ $key == 'v' ]]; then
+    flag_m=0
+    dirC=""
+    dirM=""
+    flag_c=0
+    echo "Colar cancelado!"
+
   elif [[ $key == 'h' ]]; then
     clear
     echo "a: abrir arquivo/diretorio"
@@ -186,6 +243,9 @@ while true; do
     echo ".: criar arquivo/diretorio"
     echo "r: remover arquivo/diretorio"
     echo "f: renomear arquivo/diretorio"
+    echo "c: copiar e colar arquivo/diretorio"
+    echo "m: mover e colar arquivo/diretorio"
+    echo "v: cancelar copiar/mover"
     echo "h: ajuda"
     read -sn1
     getValues
